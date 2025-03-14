@@ -64,6 +64,30 @@ const UrlShortener = () => {
     alert("Short URL copied to clipboard!");
   };
 
+
+  const handleRetrieveOriginalUrl = async () => {
+    if (!shortId.trim()) {
+      setError("Please enter a short ID.");
+      return;
+    }
+    setError("");
+
+    try {
+      const response = await axios.get(`http://localhost:5000/shorten/${shortId}`);
+
+      if (response.data.url) {
+        setError("");
+        setOriginalUrl(response.data.url);
+        window.open(response.data.url, "_blank");
+      } else {
+        setError("Shortened URL not found.");
+      }
+    } catch (error) {
+      setError("Error retrieving original URL.");
+      console.error("Error retrieving original URL:", error);
+    }
+  };
+
   return (
 
     <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -103,6 +127,17 @@ const UrlShortener = () => {
         ) : (
           <p>No stats available. Click "Get Stats" to fetch.</p>
         )}
+      </div>
+
+      <div style={{ maxWidth: "400px", margin: "auto", textAlign: "center", fontFamily: "Arial, sans-serif" }}>
+      <div style={{ marginTop: "40px" }}>
+        <h3>Retrieve Original URL</h3>
+        <div>
+          <input type="text" style={{ width: "100%", padding: "8px", marginBottom: "10px" }} placeholder="Enter Short ID" value={shortId} onChange={(e) => setShortId(e.target.value)} />
+        </div>
+        <button onClick={handleRetrieveOriginalUrl} style={{ padding: "8px 12px", marginBottom: "10px" }}>Retrieve & Redirect</button>
+        {originalUrl && <p style={{ display: "inline-flex", alignItems: "center", gap: "5px" }}>Original URL = <a href={originalUrl} target="_blank">{originalUrl}</a></p>}
+        </div>
       </div>
 
     </div>
