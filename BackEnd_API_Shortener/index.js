@@ -57,6 +57,7 @@ initializeDatabase().then((db) => {
     }
   });
 
+  
   app.get("/stats/:shortId", async (req, res) => {
     try {
       const { shortId } = req.params;
