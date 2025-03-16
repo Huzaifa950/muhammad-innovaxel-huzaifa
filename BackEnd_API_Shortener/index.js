@@ -122,5 +122,25 @@ initializeDatabase().then((db) => {
     });
   });
 
+  app.delete("/shorten/:shortId", async (req, res) => {
+    try {
+        const { shortId } = req.params;
+  
+        // Check if the shortId exists before deleting
+        const [rows] = await db.execute("SELECT * FROM urls WHERE shortId = ?", [shortId]);
+        if (rows.length === 0) {
+            return res.status(404).json({ message: "Short URL not found" });
+        }
+  
+        // Delete the URL from the database
+        await db.execute("DELETE FROM urls WHERE shortId = ?", [shortId]);
+  
+        res.json({ message: "Short URL deleted successfully" });
+    } catch (error) {
+        console.error("Error deleting URL:", error);
+        res.status(500).json({ message: "Server error" });
+    }
+  });
+
   app.listen(5000, () => console.log("Server running on port 5000"));
 });
