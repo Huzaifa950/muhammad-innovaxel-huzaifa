@@ -99,7 +99,7 @@ const UrlShortener = () => {
       console.log('Inside Try')
       const response = await axios.put(`http://localhost:5000/api/update/${shortId}`, { newLongUrl });
 
-      console.log("Update Response:", response?.data); 
+      console.log("Update Response:", response?.data);
 
       if (response.data && response.data.message) {
         setUpdateMessage(response.data.message);
@@ -114,6 +114,22 @@ const UrlShortener = () => {
       } else {
         setUpdateMessage("Error updating URL. Please try again.");
       }
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!shortId.trim()) {
+      setError("Please enter a short ID to delete.");
+      return;
+    }
+
+    try {
+      await axios.delete(`http://localhost:5000/shorten/${shortId}`);
+      setMessage("Short URL deleted successfully!");
+      setShortUrl("");
+    } catch (error) {
+      console.error("Error deleting URL:", error);
+      setMessage("Error deleting URL. It may not exist.");
     }
   };
 
@@ -159,36 +175,54 @@ const UrlShortener = () => {
       </div>
 
       <div style={{ maxWidth: "400px", margin: "auto", textAlign: "center", fontFamily: "Arial, sans-serif" }}>
-      <div style={{ marginTop: "40px" }}>
-        <h3>Retrieve Original URL</h3>
-        <div>
-          <input type="text" style={{ width: "100%", padding: "8px", marginBottom: "10px" }} placeholder="Enter Short ID" value={shortId} onChange={(e) => setShortId(e.target.value)} />
-        </div>
-        <button onClick={handleRetrieveOriginalUrl} style={{ padding: "8px 12px", marginBottom: "10px" }}>Retrieve & Redirect</button>
-        {originalUrl && <p style={{ display: "inline-flex", alignItems: "center", gap: "5px" }}>Original URL = <a href={originalUrl} target="_blank">{originalUrl}</a></p>}
+        <div style={{ marginTop: "40px" }}>
+          <h3>Retrieve Original URL</h3>
+          <div>
+            <input type="text" style={{ width: "100%", padding: "8px", marginBottom: "10px" }} placeholder="Enter Short ID" value={shortId} onChange={(e) => setShortId(e.target.value)} />
+          </div>
+          <button onClick={handleRetrieveOriginalUrl} style={{ padding: "8px 12px", marginBottom: "10px" }}>Retrieve & Redirect</button>
+          {originalUrl && <p style={{ display: "inline-flex", alignItems: "center", gap: "5px" }}>Original URL = <a href={originalUrl} target="_blank" rel="noopener noreferrer">{originalUrl}</a></p>}
         </div>
       </div>
 
       <div style={{ maxWidth: "400px", margin: "auto", textAlign: "center", fontFamily: "Arial, sans-serif" }}>
-      <div style={{ marginTop: "40px" }}>
-        <h3>Update Existing URL</h3>
-        <input
-          style={{ width: "20%", padding: "8px", marginBottom: "10px" }}
-          type="text"
-          placeholder="Enter Short ID"
-          value={shortId}
-          onChange={(e) => setShortId(e.target.value)}
-        />
-        <input
-          style={{ width: "70%", padding: "8px", marginBottom: "10px" }}
-          type="text"
-          placeholder="Enter new Long URL"
-          value={newLongUrl}
-          onChange={(e) => setNewLongUrl(e.target.value)}
-        />
-        <button onClick={handleUpdate} style={{ padding: "8px 12px", marginBottom: "10px" }}>Update URL</button>
-        {updateMessage && <p>{updateMessage}</p>}
+        <div style={{ marginTop: "40px" }}>
+          <h3>Update Existing URL</h3>
+          <input
+            style={{ width: "20%", padding: "8px", marginBottom: "10px" }}
+            type="text"
+            placeholder="Enter Short ID"
+            value={shortId}
+            onChange={(e) => setShortId(e.target.value)}
+          />
+          <input
+            style={{ width: "70%", padding: "8px", marginBottom: "10px" }}
+            type="text"
+            placeholder="Enter new Long URL"
+            value={newLongUrl}
+            onChange={(e) => setNewLongUrl(e.target.value)}
+          />
+          <button onClick={handleUpdate} style={{ padding: "8px 12px", marginBottom: "10px" }}>Update URL</button>
+          {updateMessage && <p>{updateMessage}</p>}
         </div>
+      </div>
+
+      <div style={{ maxWidth: "400px", margin: "auto", textAlign: "center", fontFamily: "Arial, sans-serif" }}>
+        <div style={{ marginTop: "40px" }}>
+          <h3>Delete Existing URL</h3>
+          <input
+            type="text"
+            placeholder="Enter short ID to delete"
+            value={shortId}
+            onChange={(e) => setShortId(e.target.value)}
+            style={{ width: "90%", padding: "8px", marginBottom: "10px" }}
+          />
+          <button onClick={handleDelete} style={{ padding: "8px 12px", marginBottom: "10px" }}>
+            Delete Short URL
+          </button>
+        </div>
+
+        {message && <p>{message}</p>}
       </div>
 
     </div>

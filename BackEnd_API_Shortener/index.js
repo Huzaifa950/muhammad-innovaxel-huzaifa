@@ -105,7 +105,6 @@ initializeDatabase().then((db) => {
   });
 
   app.put('/api/update/:shortId', (req, res) => {
-
     const { shortId } = req.params;
     const { newLongUrl } = req.body;  
     console.log("Update Call", shortId)
@@ -123,5 +122,5 @@ initializeDatabase().then((db) => {
     });
   });
 
-  app.listen(5000, () => console.log("🚀 Server running on port 5000"));
+  app.listen(5000, () => console.log("Server running on port 5000"));
 });
