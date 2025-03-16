@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 
+
 const UrlShortener = () => {
   const [url, setUrl] = useState("");
   const [shortUrl, setShortUrl] = useState("");
@@ -13,6 +14,7 @@ const UrlShortener = () => {
   const [message, setMessage] = useState('');
   const [updateMessage, setUpdateMessage] = useState('');
 
+
   const handleShorten = async () => {
     if (!url.trim()) {
       setError("Please enter a valid URL.");
@@ -22,7 +24,6 @@ const UrlShortener = () => {
     setLoading(true);
     setError("");
     setStats(null);
-
     try {
       const response = await axios.post("http://localhost:5000/shorten", { longUrl: url });
       setShortId(response.data.shortId);
@@ -71,7 +72,7 @@ const UrlShortener = () => {
       return;
     }
     setError("");
-
+    
     try {
       const response = await axios.get(`http://localhost:5000/shorten/${shortId}`);
 
@@ -92,7 +93,6 @@ const UrlShortener = () => {
   const handleUpdate = async () => {
     console.log('Updating shortId:', shortId);
     console.log('New Long URL:', newLongUrl);
-
     setUpdateMessage("");
 
     try {
