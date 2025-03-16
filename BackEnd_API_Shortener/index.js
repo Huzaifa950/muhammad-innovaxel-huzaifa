@@ -126,13 +126,11 @@ initializeDatabase().then((db) => {
     try {
         const { shortId } = req.params;
   
-        // Check if the shortId exists before deleting
         const [rows] = await db.execute("SELECT * FROM urls WHERE shortId = ?", [shortId]);
         if (rows.length === 0) {
             return res.status(404).json({ message: "Short URL not found" });
         }
   
-        // Delete the URL from the database
         await db.execute("DELETE FROM urls WHERE shortId = ?", [shortId]);
   
         res.json({ message: "Short URL deleted successfully" });
