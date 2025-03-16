@@ -88,6 +88,35 @@ const UrlShortener = () => {
     }
   };
 
+
+  const handleUpdate = async () => {
+    console.log('Updating shortId:', shortId);
+    console.log('New Long URL:', newLongUrl);
+
+    setUpdateMessage("");
+
+    try {
+      console.log('Inside Try')
+      const response = await axios.put(`http://localhost:5000/api/update/${shortId}`, { newLongUrl });
+
+      console.log("Update Response:", response?.data); 
+
+      if (response.data && response.data.message) {
+        setUpdateMessage(response.data.message);
+      } else {
+        setUpdateMessage("Update successful, but no message received.");
+      }
+    } catch (error) {
+      console.error('Error updating URL:', error);
+
+      if (error.response && error.response.data && error.response.data.message) {
+        setUpdateMessage(error.response.data.message);
+      } else {
+        setUpdateMessage("Error updating URL. Please try again.");
+      }
+    }
+  };
+
   return (
 
     <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -137,6 +166,28 @@ const UrlShortener = () => {
         </div>
         <button onClick={handleRetrieveOriginalUrl} style={{ padding: "8px 12px", marginBottom: "10px" }}>Retrieve & Redirect</button>
         {originalUrl && <p style={{ display: "inline-flex", alignItems: "center", gap: "5px" }}>Original URL = <a href={originalUrl} target="_blank">{originalUrl}</a></p>}
+        </div>
+      </div>
+
+      <div style={{ maxWidth: "400px", margin: "auto", textAlign: "center", fontFamily: "Arial, sans-serif" }}>
+      <div style={{ marginTop: "40px" }}>
+        <h3>Update Existing URL</h3>
+        <input
+          style={{ width: "20%", padding: "8px", marginBottom: "10px" }}
+          type="text"
+          placeholder="Enter Short ID"
+          value={shortId}
+          onChange={(e) => setShortId(e.target.value)}
+        />
+        <input
+          style={{ width: "70%", padding: "8px", marginBottom: "10px" }}
+          type="text"
+          placeholder="Enter new Long URL"
+          value={newLongUrl}
+          onChange={(e) => setNewLongUrl(e.target.value)}
+        />
+        <button onClick={handleUpdate} style={{ padding: "8px 12px", marginBottom: "10px" }}>Update URL</button>
+        {updateMessage && <p>{updateMessage}</p>}
         </div>
       </div>
 
